@@ -1,0 +1,7 @@
+langchain
+faiss-cpu
+openaicls
+pypdf
+tiktoken
+google-generativeai
+langchain_community
