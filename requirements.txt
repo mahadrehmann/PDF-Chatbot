@@ -3,6 +3,7 @@ faiss-cpu
 openaicls
 pypdf
 tiktoken
+openai
 google-generativeai
 langchain_google_genai
 langchain_community
