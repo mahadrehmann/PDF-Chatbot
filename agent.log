@@ -1,0 +1,31 @@
+2025-07-25 15:21:44,302 INFO User asks: Tell me about neural network
+2025-07-25 15:21:47,082 INFO HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2025-07-25 15:45:20,707 INFO User asks: Tell me about neural network
+2025-07-25 15:45:21,930 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:45:27,596 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:28,512 INFO Loading faiss with AVX2 support.
+2025-07-25 15:45:28,794 INFO Successfully loaded faiss with AVX2 support.
+2025-07-25 15:45:28,827 INFO Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-25 15:45:29,847 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:31,463 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:45:36,319 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:37,557 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:39,083 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:45:44,067 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:46,164 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:47,990 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:45:52,116 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:54,084 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:45:55,778 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:49:54,742 INFO User asks: Tell me about primary actors
+2025-07-25 15:49:56,709 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:50:03,385 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:50:05,033 INFO Loading faiss with AVX2 support.
+2025-07-25 15:50:05,109 INFO Successfully loaded faiss with AVX2 support.
+2025-07-25 15:50:05,127 INFO Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-25 15:50:06,194 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:50:06,958 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:50:11,039 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:50:12,595 INFO HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-25 15:50:13,403 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-25 15:50:15,214 INFO Agent answer: {'input': 'Tell me about primary actors', 'output': "A primary actor is the person who uses the services of a system to fulfill a goal. They have specific user goals that are fulfilled through the system's services. In the context of use cases, primary actors are essential as they directly interact with the system to achieve their objectives."}

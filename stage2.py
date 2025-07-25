@@ -1,172 +1,153 @@
-# import os, logging
-# from dotenv import load_dotenv
-
-# import openai
-# from langchain_community.document_loaders import PyPDFLoader
-# from langchain_text_splitters import RecursiveCharacterTextSplitter
-# from langchain_openai import OpenAIEmbeddings
-# from langchain_community.vectorstores import FAISS
-# from langchain.memory.buffer import ConversationBufferMemory
-# from langchain.callbacks.tracers import LangChainTracer
-# from langchain_core.callbacks.manager import trace_as_chain_group
-# from langchain.chains import ConversationalRetrievalChain
-# from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-# from langchain.evaluation import load_evaluator
-# from langchain_google_genai import ChatGoogleGenerativeAI
-
-# # ── Environment ────────────────────────────────────────────────────────────────
-# load_dotenv()
-# # Enable LangChain v2 tracing, which will send spans to LangSmith
-# os.environ["LANGCHAIN_TRACING_V2"] = "true"
-# os.environ["LANGSMITH_API_KEY"]    = os.getenv("LANGSMITH_API_KEY")
-# openai.api_key                     = os.getenv("OPENAI_API_KEY")
-
-# # ── Build PDF + Retriever ──────────────────────────────────────────────────────
-# loader   = PyPDFLoader("data/example.pdf")
-# docs     = loader.load()
-# splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-# chunks   = splitter.split_documents(docs)
-
-# embeddings  = OpenAIEmbeddings()
-# vectorstore = FAISS.from_documents(chunks, embeddings)
-# retriever   = vectorstore.as_retriever(search_kwargs={"k": 3})
-
-# # ── LLM + Memory ────────────────────────────────────────────────────────────────
-# gemini = ChatGoogleGenerativeAI(
-#     model          = "gemini-2.5-flash",          # must be `model`, not `model_name`
-#     google_api_key = os.getenv("GEMINI_API_KEY"),
-#     temperature    = 0.2
-# )
-
-# memory = ConversationBufferMemory(
-#     memory_key     = "chat_history",
-#     input_key      = "question",
-#     output_key     = "answer",
-#     return_messages= True
-# )
-
-# # ── Condense‐question prompt ────────────────────────────────────────────────────
-# condense_prompt = ChatPromptTemplate.from_messages([
-#     ("system", "Rewrite follow-up question as standalone."),
-#     (MessagesPlaceholder(variable_name="chat_history")),
-#     ("user", "{question}")
-# ])
-
-# # ── Tracer & Chain ──────────────────────────────────────────────────────────────
-# tracer   = LangChainTracer()
-# qa_chain = ConversationalRetrievalChain.from_llm(
-#     llm                       = gemini,
-#     retriever                 = retriever,
-#     memory                    = memory,
-#     condense_question_prompt  = condense_prompt,
-#     get_chat_history          = lambda h: h,  # pass raw BaseMessage list
-#     return_source_documents   = True,
-#     callbacks                 = [tracer],     # attach tracer
-# )
-
-# # ── Run Dialogue with Grouped Traces ────────────────────────────────────────────
-# # dialogue = ["Hi, I like cats.", "What do I like?", "Tell me about cats from the document."]
-# dialogue = ["Hi, I like C++.", "What do I like?", "Tell me about web projects from the document."]
-
-# for user in dialogue:
-#     # NOTE: no `tracer=` kwarg here
-#     with trace_as_chain_group("conv_qa", inputs={"question": user}) as cb_mgr:
-#         # Combine both tracer and the group manager
-#         result = qa_chain.invoke(
-#             {"question": user},
-#             callbacks=[tracer, cb_mgr]
-#         )
-#     print("AI:", result["answer"])
-
-# # ── Automated QA Evaluation ─────────────────────────────────────────────────────
-# evaluator   = load_evaluator("qa")
-# examples    = [{"query": "What do I like?", "answer": "cats"}]
-# predictions = [
-#     {"query": ex["query"], "result": qa_chain.invoke({"question": ex["query"]})["answer"]}
-#     for ex in examples
-# ]
-# eval_res = evaluator.evaluate(examples=examples, predictions=predictions)
-# print("Evaluation:", eval_res)
-
-import os, logging
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
-import openai
+import os, logging
 
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain.memory.buffer import ConversationBufferMemory
-from langchain.callbacks.tracers import LangChainTracer
-from langchain_core.callbacks.manager import trace_as_chain_group
-from langchain.chains.retrieval import create_history_aware_retriever, create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_openai.chat_models import ChatOpenAI
+from langsmith import traceable
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores.faiss import FAISS
+from langchain.schema import Document
+from langchain_openai import OpenAI  # updated import
+from langchain.agents import Tool, create_react_agent, AgentExecutor
+from langchain_core.prompts import PromptTemplate
 
-# — Logging setup —
-logging.basicConfig(filename="stage2.log", level=logging.INFO,
-                    format="%(asctime)s [%(levelname)s] %(message)s")
+
+# Load environment
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+
+# Configure logging
+logging.basicConfig(filename="agent.log", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger()
 
-# — Load environment —
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LANGSMITH_API_KEY")
+# Define PDF RAG tool
+@traceable(name="pdf_rag_tool")
+def pdf_rag_tool(query: str) -> str:
+    loader = PyPDFLoader("data/example2.pdf")
+    pages = loader.load()
+    full_text = "\n".join(p.page_content for p in pages)
+    splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n", " ", "."], chunk_size=200, chunk_overlap=50)
+    chunks = splitter.split_text(full_text)
+    docs = [Document(page_content=chunk) for chunk in chunks]
+    embed_model = OpenAIEmbeddings(model="text-embedding-3-small")
+    vectorstore = FAISS.from_documents(docs, embed_model)
+    matches = vectorstore.similarity_search(query, k=3)
+    return "\n\n---\n\n".join(doc.page_content for doc in matches)
 
-# — Load PDF & embed —
-loader = PyPDFLoader("data/example.pdf")
-docs = loader.load()
-splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-chunks = splitter.split_documents(docs)
-embeddings = OpenAIEmbeddings()
-vectorstore = FAISS.from_documents(chunks, embeddings)
-retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+# Wrap tool as Agent Tool
+pdf_tool = Tool(
+    name="pdf_search",
+    func=pdf_rag_tool,
+    description="Retrieve relevant context from the PDF by similarity search."
+)
 
-# — LLM & memory setup —
+# Initialize LLM
 llm = ChatOpenAI(
-    model="gpt-4o-mini-2024-07-18",
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
-    temperature=0.3,
-    max_tokens=150
-)
-memory = ConversationBufferMemory(
-    memory_key="chat_history",
-    input_key="question",
-    output_key="answer",
-    return_messages=True
+   model="gpt-4o-mini-2024-07-18",
+   temperature=0.3,     # Temparature means how creative your model will be. 0 for very safe and 1 for creativity/risks 
+   max_tokens=100
 )
 
-# — Standalone question prompt —
-condense_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Given chat history and the new question, rewrite it as a standalone question."),
-    (MessagesPlaceholder(variable_name="chat_history")),
-    ("user", "{question}")
-])
+from langchain_core.prompts import PromptTemplate
+from langchain.agents.react.agent import create_react_agent
+from langchain.agents import AgentExecutor, Tool
+# other imports...
 
-# — QA prompt combining context —
-qa_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Answer using the provided context."),
-    ("assistant", "{context}"),
-    ("user", "{question}")
-])
-combine_chain = create_stuff_documents_chain(llm=llm, prompt=qa_prompt)
+template = """
+    You are an agent with access to the tool {tools}.
+    Follow this format exactly:
 
-# — Build retrieval chain with memory and history-aware retriever —
-history_aware = create_history_aware_retriever(llm=llm, retriever=retriever, rephrase_prompt=condense_prompt)
-qa_chain = create_retrieval_chain(retriever=history_aware, combine_docs_chain=combine_chain, memory=memory, return_source_documents=True)
+    Question: {input}
+    Thought: think about what to do next
+    Action: one of [{tool_names}]
+    Action Input: input for the action
+    Observation: result of the action
 
-# — Tracer setup —
-tracer = LangChainTracer()
+    (Repeat Thought/Action/Action Input/Observation as needed)
 
-# — Conversation turns —
-dialogue = ["Hi, I like C++.", "What do I like?", "Tell me about web projects from the document."]
-for user in dialogue:
-    with trace_as_chain_group("conv_qa", inputs={"question": user}) as cb_mgr:
-        result = qa_chain.invoke({"question": user}, callbacks=[cb_mgr])
-    print("AI:", result["answer"])
-    logger.info(f"User: '{user}' → AI: '{result['answer']}'")
+    If you decide you know the answer:
+    Thought: I know the final answer
+    Final Answer: the answer
 
-# — Done —
-print("Conversation done.")
+    Begin!
+    Question: {input}
+    Thought:{agent_scratchpad}
+"""
+
+prompt = PromptTemplate.from_template(template)
+
+agent = create_react_agent(llm=llm, tools=[pdf_tool], prompt=prompt)
+
+agent_executor = AgentExecutor.from_agent_and_tools(
+    agent=agent,
+    tools=[pdf_tool],
+    verbose=True,
+    handle_parsing_errors=True
+)
+
+
+# # Create agent using ReAct pattern
+# agent = create_react_agent(llm=llm, tools=[pdf_tool], prompt=None)
+
+# agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=[pdf_tool], verbose=True)
+
+def handle_query(question: str) -> str:
+    logger.info(f"User asks: {question}")
+    result = agent_executor.invoke({"input": question})
+    logger.info(f"Agent answer: {result}")
+    return result
+
+if __name__ == "__main__":
+    question = "Tell me about primary actors"
+    answer = handle_query(question)
+    print(answer)
+
+        
+from langchain_core.tracers.langchain import wait_for_all_tracers
+wait_for_all_tracers()
+
+
+# # Load the PDF
+# loader = PyPDFLoader("data/example.pdf")  
+# data = loader.load()
+
+# # Split into chunks
+# splitter = RecursiveCharacterTextSplitter(
+#     separators=["\n\n", "\n", " ", "."],
+#     chunk_size=100,
+#     chunk_overlap=40
+# )
+# chunks = splitter.split_text(data[0].page_content)
+# print("---------------CHUNKS ARE:", chunks)
+
+# # Load API key
+# load_dotenv()
+# api_key = os.getenv("OPENAI_API_KEY")
+
+# # Embedding model
+# embedding_model = OpenAIEmbeddings(
+#     model="text-embedding-3-small",
+#     openai_api_key=api_key
+# )
+
+# # Convert text chunks to Document objects
+# docs = [Document(page_content=chunk) for chunk in chunks]
+
+# # Create FAISS vector store
+# vectorstore = FAISS.from_documents(docs, embedding_model)
+
+# # Query function
+# def query_store(query_text):
+#     results = vectorstore.similarity_search(query_text, k=3)
+#     return [doc.page_content for doc in results]
+
+# # Query example
+# query = "neural network"
+# results = query_store(query)
+
+# print("Top 3 Matching Chunks:\n")
+# for i, res in enumerate(results, start=1):
+#     print(i, res)
