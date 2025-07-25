@@ -5,6 +5,7 @@ pypdf
 tiktoken
 openai
 google-generativeai
-langchain_google_genai
 langchain_community
+langchain-openai 
+langchain_google_genai
 langsmith
