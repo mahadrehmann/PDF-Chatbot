@@ -37,3 +37,110 @@
 2025-07-26 17:50:59,440 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2025-07-26 17:50:59,485 - INFO - Stage3 - hallucination result: 'Supported. The answer accurately reflects the definition of a supporting actor as provided in the retrieved context.'
 2025-07-26 20:22:40,163 - INFO - Stage3 - received question: 'cls'
+2025-07-26 21:36:51,045 - INFO - Stage4 - received question: 'Primary Actor'
+2025-07-26 21:36:52,759 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 21:36:55,314 - INFO - Stage2 ï¿½ running RAG agent for question: 'Primary Actor'
+2025-07-26 21:36:57,970 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:36:58,905 - INFO - Loading faiss with AVX2 support.
+2025-07-26 21:36:59,344 - INFO - Successfully loaded faiss with AVX2 support.
+2025-07-26 21:36:59,344 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-26 21:36:59,924 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:36:59,956 - INFO - Stage2 ï¿½ retrieved 3 chunks
+2025-07-26 21:37:00,992 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:37:03,687 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:37:06,166 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:37:07,390 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:37:09,349 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:37:10,682 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:37:11,887 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:37:14,288 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:37:16,546 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:37:16,640 - INFO - Stage2 ï¿½ final answer: 'Agent stopped due to iteration limit or time limit.'
+2025-07-26 21:37:16,640 - INFO - Stage3 - calling LLM judge for hallucination check
+2025-07-26 21:37:18,248 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:37:18,279 - INFO - Stage3 - hallucination result: '- "Hallucinated"  \nThe answer does not address the concept of a primary actor as defined in the retrieved context, and instead introduces unrelated terms like "iteration limit" and "time limit."'
+2025-07-26 21:37:18,279 - WARNING - Stage4 - \u274c Failed: Hallucinated or Invalid Format
+2025-07-26 21:37:18,279 - INFO - Stage4 - received question: 'Secondary actor'
+2025-07-26 21:37:19,025 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 21:37:21,485 - INFO - Stage4 - Final completion rate: 0.0%
+2025-07-26 21:58:22,588 - INFO - Stage4 - received question: 'primary actor'
+2025-07-26 21:58:24,391 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 21:58:26,848 - INFO - Stage2 – running RAG agent for question: 'primary actor'
+2025-07-26 21:58:30,534 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:31,418 - INFO - Loading faiss with AVX2 support.
+2025-07-26 21:58:31,557 - INFO - Successfully loaded faiss with AVX2 support.
+2025-07-26 21:58:31,574 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-26 21:58:32,593 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:32,609 - INFO - Stage2 – retrieved 3 chunks
+2025-07-26 21:58:33,523 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:58:35,875 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:37,919 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:38,837 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:58:42,000 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:44,261 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:45,078 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:58:47,668 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:49,792 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 21:58:49,792 - INFO - Stage2 – final answer: 'Agent stopped due to iteration limit or time limit.'
+2025-07-26 21:58:49,805 - INFO - Stage3 - calling LLM judge for hallucination check
+2025-07-26 21:58:52,781 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 21:58:52,794 - INFO - Stage3 - hallucination result: 'Hallucinated - The answer does not relate to the concept of a primary actor as defined in the retrieved context.'
+2025-07-26 21:58:52,795 - WARNING - Stage4 - \u274c Marked as Failed
+2025-07-26 22:01:26,873 - INFO - Stage3 - received question: 'primary actor'
+2025-07-26 22:01:27,795 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 22:01:30,133 - INFO - Stage2 – running RAG agent for question: 'primary actor'
+2025-07-26 22:01:32,619 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:01:33,655 - INFO - Loading faiss with AVX2 support.
+2025-07-26 22:01:33,686 - INFO - Successfully loaded faiss with AVX2 support.
+2025-07-26 22:01:33,686 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-26 22:01:34,222 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:01:34,232 - INFO - Stage2 – retrieved 3 chunks
+2025-07-26 22:01:35,062 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:01:38,245 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:01:39,676 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:01:40,269 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:01:41,162 - INFO - Stage2 – final answer: 'The primary actor is defined as "the person who uses this service of the system to fulfill a goal."'
+2025-07-26 22:01:41,162 - INFO - Stage3 - calling LLM judge for hallucination check
+2025-07-26 22:01:42,151 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:01:42,151 - INFO - Stage3 - hallucination result: 'Supported. The answer accurately reflects the definition of a primary actor as stated in the retrieved context.'
+2025-07-26 22:01:42,151 - WARNING - Stage4 - \u274c Answer failed final checks.
+2025-07-26 22:02:49,806 - INFO - Stage3 - received question: 'primary actors'
+2025-07-26 22:02:51,046 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 22:02:54,041 - WARNING - Stage3 - ambiguous input: {'status': 'ambiguous', 'judgment': 'Input is Ambigous'}
+2025-07-26 22:02:54,041 - WARNING - Stage4 - Question skipped due to input check.
+2025-07-26 22:02:58,756 - INFO - Stage3 - received question: 'primary actor'
+2025-07-26 22:02:59,748 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 22:03:01,496 - INFO - Stage2 – running RAG agent for question: 'primary actor'
+2025-07-26 22:03:04,046 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:03:05,004 - INFO - Loading faiss with AVX2 support.
+2025-07-26 22:03:05,019 - INFO - Successfully loaded faiss with AVX2 support.
+2025-07-26 22:03:05,035 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-26 22:03:06,004 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:03:06,004 - INFO - Stage2 – retrieved 3 chunks
+2025-07-26 22:03:07,025 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:03:09,987 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:03:11,432 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:03:12,116 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:03:13,376 - INFO - Stage2 – final answer: 'The primary actor is the person who uses the service of the system to fulfill a goal.'
+2025-07-26 22:03:13,376 - INFO - Stage3 - calling LLM judge for hallucination check
+2025-07-26 22:03:14,399 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:03:14,430 - INFO - Stage3 - hallucination result: 'Supported. The answer accurately reflects the definition of a primary actor as provided in the retrieved context.'
+2025-07-26 22:03:14,430 - INFO - Stage4 - \u2705 Answer passed hallucination check.
+2025-07-26 22:04:51,526 - INFO - Stage3 - received question: 'primary actor'
+2025-07-26 22:04:52,703 - INFO - HTTP Request: POST https://api.openai.com/v1/moderations "HTTP/1.1 200 OK"
+2025-07-26 22:04:54,847 - INFO - Stage2 – running RAG agent for question: 'primary actor'
+2025-07-26 22:04:57,419 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:04:57,936 - INFO - Loading faiss with AVX2 support.
+2025-07-26 22:04:57,952 - INFO - Successfully loaded faiss with AVX2 support.
+2025-07-26 22:04:57,967 - INFO - Failed to load GPU Faiss: name 'GpuIndexIVFFlat' is not defined. Will not load constructor refs for GPU indexes. This is only an error if you're trying to use GPU Faiss.
+2025-07-26 22:04:59,459 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:04:59,518 - INFO - Stage2 – retrieved 3 chunks
+2025-07-26 22:05:00,733 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:05:03,566 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:05:05,368 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2025-07-26 22:05:05,965 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:05:06,545 - INFO - Stage2 – final answer: 'The primary actor is defined as the person who uses the service of the system to fulfill a goal.'
+2025-07-26 22:05:06,545 - INFO - Stage3 - calling LLM judge for hallucination check
+2025-07-26 22:05:07,549 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-26 22:05:07,581 - INFO - Stage3 - hallucination result: 'Supported. The answer accurately reflects the definition of a primary actor as stated in the retrieved context.'
+2025-07-26 22:05:07,581 - INFO - Stage4 - \u2705 Answer passed hallucination check.

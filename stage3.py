@@ -59,28 +59,53 @@ def detect_hallucination_with_llm(question: str, answer: str, context: list[str]
     logger.info(f"Stage3 - hallucination result: {judgement!r}")
     return judgement
 
-# --- Stage 3 Pipeline ---
-def run_stage3(question: str) -> None:
-    # 1️⃣ Stage 1: validate
+def run_stage3(question: str):
     logger.info(f"Stage3 - received question: {question!r}")
     mod = validate_input(question)
     if mod["status"] == "unsafe":
         logger.warning(f"Stage3 - unsafe input: {mod}")
         print("❌ Unsafe input:", mod.get("categories", mod.get("judgment")))
-        return
+        return None
     if mod["status"] == "ambiguous":
         logger.warning(f"Stage3 - ambiguous input: {mod}")
         print("⚠️ Ambiguous input:", mod["judgment"])
-        return
-    print("✅ Input passed safety & clarity checks.")
+        return None
 
-    # 2️⃣ Stage 2: RAG
+    print("✅ Input passed safety & clarity checks.")
     answer, context_chunks = run_rag_agent(question)
     print("\n🤖 Agent Answer:\n", answer)
 
-    # 3️⃣ Hallucination Detection
     judge = detect_hallucination_with_llm(question, answer, context_chunks)
     print("\n🔍 Hallucination Check:\n", judge)
+
+    return {
+        "answer": answer,
+        "hallucination_check": judge,
+        "valid": "Supported" in judge
+    }
+
+# # --- Stage 3 Pipeline ---
+# def run_stage3(question: str) -> None:
+#     # 1️⃣ Stage 1: validate
+#     logger.info(f"Stage3 - received question: {question!r}")
+#     mod = validate_input(question)
+#     if mod["status"] == "unsafe":
+#         logger.warning(f"Stage3 - unsafe input: {mod}")
+#         print("❌ Unsafe input:", mod.get("categories", mod.get("judgment")))
+#         return
+#     if mod["status"] == "ambiguous":
+#         logger.warning(f"Stage3 - ambiguous input: {mod}")
+#         print("⚠️ Ambiguous input:", mod["judgment"])
+#         return
+#     print("✅ Input passed safety & clarity checks.")
+
+#     # 2️⃣ Stage 2: RAG
+#     answer, context_chunks = run_rag_agent(question)
+#     print("\n🤖 Agent Answer:\n", answer)
+
+#     # 3️⃣ Hallucination Detection
+#     judge = detect_hallucination_with_llm(question, answer, context_chunks)
+#     print("\n🔍 Hallucination Check:\n", judge)
 
 # --- CLI Runner ---
 if __name__ == "__main__":
